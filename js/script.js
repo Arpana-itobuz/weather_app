@@ -6,29 +6,23 @@ async function getWeatherData() {
   });
   console.log(response);
   const locationPlace = document.getElementById("location")
-  locationPlace.innerHTML=response.location.name;
-
-  const icon = document.getElementById("icon")
-//   if ()
+  locationPlace.innerHTML = response.location.name;
 
   const temperature = document.getElementById("temperature")
-  temperature.innerHTML=`${response.current.feelslike_c}°`;
+  temperature.innerHTML = `${response.current.temp_c}°`;
+
+  const feelsLike = document.getElementById("feels-like")
+  feelsLike.innerHTML = `Feels ${response.current.feelslike_c}°`;
+  console.log(response.current.feelsLike);
 
   const humidity = document.getElementById("humidity")
-  humidity.innerHTML=`Humidity: ${response.current.humidity}`;
+  humidity.innerHTML = `Humidity: ${response.current.humidity}`;
 
   const cloud = document.getElementById("cloud")
-  cloud.innerHTML=`Cloud: ${response.current.cloud}`;
+  cloud.innerHTML = `Cloud: ${response.current.cloud}`;
 
   const uv = document.getElementById("uv")
-  uv.innerHTML=`uv: ${response.current.uv}`;
-
-
-  
-
+  uv.innerHTML = `uv: ${response.current.uv}`;
 }
 
 getWeatherData();
-
-// const locationPlace = document.getElementById("location")
-// locationPlace.innerHTML=response.location.name;
