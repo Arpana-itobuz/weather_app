@@ -2,7 +2,21 @@ const temperature = document.getElementById("temperature");
 const feelsLike = document.getElementById("feels-like");
 const locationPlace = document.querySelector("input");
 let image = document.querySelector(".top-section img");
+let suggest = document.querySelector(".suggestion");
 console.log(image);
+
+const suggestionCity = [
+  "Kolkata",
+  "Bihar",
+  "London",
+  "Barrackpore",
+  "Hisar",
+  "Pathankot",
+  "New Delhi",
+  "Amritsar",
+  "Kanpur",
+  "Surat",
+];
 
 async function getWeatherData(query) {
   const response = await fetch(
@@ -10,10 +24,11 @@ async function getWeatherData(query) {
   ).then(function (res) {
     return res.json();
   });
+  console.log(response);
 
   locationPlace.value = response.location.name;
   temperature.innerHTML = `${response.current.temp_c}°`;
- 
+
   if (response.current.temp_c < 5) {
     image.src = "./images/snowy-6.svg";
   } else if (response.current.temp_c >= 5 && response.current.temp_c < 10) {
@@ -36,6 +51,33 @@ locationPlace.addEventListener("keyup", (e) => {
   }
 });
 
-(()=>{
-  getWeatherData("kolkata")
+(function addSuggestionCity() {
+  suggestionCity.forEach((city) => {
+    let li = document.createElement("li");
+    li.textContent = city;
+    suggest.firstElementChild.appendChild(li);
+  });
+})();
+
+suggest.firstElementChild.addEventListener("click",(e)=>{
+  locationPlace.value=e.target.textContent;
+  getWeatherData(locationPlace.value)
+})
+
+window.addEventListener("click", (e) => {
+  if (e.target == locationPlace) {
+    suggest.classList.remove("hide");
+  } else {
+    suggest.classList.add("hide");
+  }
+});
+locationPlace.addEventListener("click",(e)=>{
+  if(e.key=="Enter"){
+    getWeatherData(e.target.value)
+  }
+});
+
+
+(() => {
+  getWeatherData("kolkata");
 })();
