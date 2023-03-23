@@ -73,6 +73,33 @@ input {
   font-size: 1.8rem;
 }
 
+.suggestion {
+  position: absolute;
+  height: 20vh;
+  width: 90%;
+  background-color: aliceblue;
+  top: 4rem;
+  left: 7%;
+  opacity: 0.5;
+  overflow: scroll;
+  border-radius: 3%;
+}
+
+.suggestion ul {
+  color: black;
+  list-style: none;
+}
+
+.suggestion ul li {
+  cursor: pointer;
+  text-align: center;
+  padding: 3px;
+}
+
+.hide {
+  display: none;
+}
+
 @media (min-width: 321px) {
   #location {
     font-size: 3rem;
@@ -95,35 +122,15 @@ input {
   }
 }
 
-.suggestion {
-  position: absolute;
-  height: 20vh;
-  width: 30%;
-  background-color: aliceblue;
-  top: 4rem;
-  left: 29rem;
-  opacity: 0.5;
-  overflow: scroll;
-  border-radius: 3%;
-}
-
-.suggestion ul {
-  color: black;
-  list-style: none;
-}
-
-.suggestion ul li {
-  cursor: pointer;
-  text-align: center;
-  padding: 3px;
-}
-
-.hide {
-  display: none;
-}
-
 @media (min-width: 480px) {
   a {
     display: block !important;
+  }
+}
+
+@media (min-width: 800px) {
+  .suggestion {
+    left: 35%;
+    width: 30%;
   }
 }
