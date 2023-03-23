@@ -1,83 +1,96 @@
 const temperature = document.getElementById("temperature");
 const feelsLike = document.getElementById("feels-like");
-const locationPlace = document.querySelector("input");
+const locationName = document.querySelector("input");
 let image = document.querySelector(".top-section img");
 let suggest = document.querySelector(".suggestion");
+const allCities = [];
 console.log(image);
 
-const suggestionCity = [
-  "Kolkata",
-  "Bihar",
-  "London",
-  "Barrackpore",
-  "Hisar",
-  "Pathankot",
-  "New Delhi",
-  "Amritsar",
-  "Kanpur",
-  "Surat",
-];
-
 async function getWeatherData(query) {
-  const response = await fetch(
-    `http://api.weatherapi.com/v1/current.json?key=0c80b2b56f1943ada19100744230103&q=${query}&aqi=no`
-  ).then(function (res) {
-    return res.json();
-  });
-  console.log(response);
+  if (query.length !== 0) {
+    await fetch(`http://localhost:5000/get-weather?city=${query}`)
+      .then((data) => {
+        return data.json();
+      })
+      .then((d) => addWeatherData(d))
+      .catch((err) => {
+        alert("Enter valid city");
+      });
+  } else {
+    alert("Enter a city");
+  }
+}
 
-  locationPlace.value = response.location.name;
-  temperature.innerHTML = `${response.current.temp_c}°`;
+function addWeatherData(res) {
+  locationName.value = res.location.name;
+  temperature.innerHTML = `${res.current.tempC}°`;
 
-  if (response.current.temp_c < 5) {
+  if (res.current.tempC < 5) {
     image.src = "./images/snowy-6.svg";
-  } else if (response.current.temp_c >= 5 && response.current.temp_c < 10) {
+  } else if (res.current.tempC >= 5 && res.current.tempC < 10) {
     image.src = "./images/snowy-3.svg";
-  } else if (response.current.temp_c >= 10 && response.current.temp_c < 20) {
+  } else if (res.current.tempC >= 10 && res.current.tempC < 20) {
     image.src = "./images/rainy-4.svg";
-  } else if (response.current.temp_c >= 20 && response.current.temp_c < 30) {
+  } else if (res.current.tempC >= 20 && res.current.tempC < 30) {
     image.src = "./images/cloudy-day-3.svg";
-  } else if (response.current.temp_c >= 30 && response.current.temp_c < 40) {
+  } else if (res.current.tempC >= 30 && res.current.tempC < 40) {
     image.src = "./images/cloudy-day-1.svg";
   }
 
-  feelsLike.innerHTML = `Feels ${response.current.feelslike_c}°`;
+  feelsLike.innerHTML = `Feels ${res.current.feelslikeC}°`;
 }
 
-locationPlace.addEventListener("keyup", (e) => {
-  if (e.key == "Enter") {
+locationName.addEventListener("keyup", (e) => {
+  if (e.key === "Enter") {
     console.log(e.target.value);
     getWeatherData(e.target.value);
   }
 });
 
-(function addSuggestionCity() {
-  suggestionCity.forEach((city) => {
+function addSuggestionCity() {
+  allCities.forEach((city) => {
     let li = document.createElement("li");
     li.textContent = city;
     suggest.firstElementChild.appendChild(li);
   });
-})();
+}
 
-suggest.firstElementChild.addEventListener("click",(e)=>{
-  locationPlace.value=e.target.textContent;
-  getWeatherData(locationPlace.value)
-})
+suggest.firstElementChild.addEventListener("click", (e) => {
+  locationName.value = e.target.textContent;
+  getWeatherData(locationName.value);
+});
+
+async function getAllCities() {
+  await fetch(`http://localhost:5000/get-all-cities`)
+    .then((data) => {
+      return data.json();
+    })
+    .then((d) => {
+      d.forEach((city) => {
+        allCities.push(city);
+      });
+    })
+    .then(() => addSuggestionCity())
+    .catch((err) => {
+      console.log(err);
+      alert(err);
+    });
+}
 
 window.addEventListener("click", (e) => {
-  if (e.target == locationPlace) {
+  if (e.target === locationName) {
     suggest.classList.remove("hide");
   } else {
     suggest.classList.add("hide");
   }
 });
-locationPlace.addEventListener("click",(e)=>{
-  if(e.key=="Enter"){
-    getWeatherData(e.target.value)
+locationName.addEventListener("click", (e) => {
+  if (e.key === "Enter") {
+    getWeatherData(e.target.value);
   }
 });
 
-
 (() => {
+  getAllCities();
   getWeatherData("kolkata");
 })();
